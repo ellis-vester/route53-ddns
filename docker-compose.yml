@@ -1,20 +1,29 @@
 version: "3.8"
-
+secrets:
+  route53_ddns_aws_access_key_id: 
+    external: true
+  route53_ddns_aws_secret_access_key: 
+    external: true
+configs:
+  route53_ddns_hosted_zone_id:
+    external: true
+  route53_ddns_domain_name:
+    external: true
+  route53_ddns_record_type:
+    external: true
+  route53_ddns_ttl:
+    external: true
+  route53_ddns_interval:
+    external: true
 services:
   route53-ddns:
-    build: .
     image: route53-ddns:latest
-    environment:
-      - HOSTED_ZONE_ID=Z104486921289MKRWZNSP
-      - DNS_RECORD_NAME=home.body-cakes.net
-      - RECORD_TYPE=A
-      - TTL=60
-      - INTERVAL=60
     secrets:
-      - aws_access_key_id
-      - aws_secret_access_key
-secrets:
-  aws_access_key_id: 
-    external: true
-  aws_secret_access_key: 
-    external: true
+      - route53_ddns_aws_access_key_id
+      - route53_ddns_aws_secret_access_key
+    configs:
+      - route53_ddns_hosted_zone_id
+      - route53_ddns_domain_name
+      - route53_ddns_record_type
+      - route53_ddns_ttl
+      - route53_ddns_interval

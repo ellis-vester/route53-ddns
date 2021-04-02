@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo "Tearing down Docker secrets and configs for route53-ddns service..."
+
+docker secret rm route53_ddns_aws_access_key_id
+docker secret rm route53_ddns_aws_secret_access_key
+
+docker config rm route53_ddns_hosted_zone_id
+docker config rm route53_ddns_domain_name
+docker config rm route53_ddns_record_type
+docker config rm route53_ddns_ttl
+docker config rm route53_ddns_interval

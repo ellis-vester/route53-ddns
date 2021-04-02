@@ -1,24 +1,20 @@
-import boto3
-from requests import get
 import os
 import time
 
-# Required
-HostedZoneId = os.environ['HOSTED_ZONE_ID']
-DnsRecordName = os.environ['DNS_RECORD_NAME']
+from requests import get
+from get_docker_secret import get_docker_secret
+import boto3
 
-# Optional
-RecordType = os.environ['RECORD_TYPE'] or 'A'
-Ttl = int(os.environ['TTL']) or 600
-Interval = int(os.environ['INTERVAL']) or 300
+# docker secrets
+AwsAccessKeyId = get_docker_secret("route53_ddns_aws_access_key_id", safe=False)
+AwsSecretAccessKey = get_docker_secret("route53_ddns_aws_secret_access_key", safe=False)
 
-def get_docker_secret(file):
-    if not os.path.isfile("/run/secrets/{}".format(file)):
-        raise Exception("Could not read {} secret".format(file))
-    return open("/run/secrets/{}".format(file), "r").read()
-
-AwsAccessKeyId = get_docker_secret("aws_access_key_id")
-AwsSecretAccessKey = get_docker_secret("aws_secret_access_key")
+# docker config
+HostedZoneId = get_docker_secret("route53_ddns_hosted_zone_id", safe=False, secrets_dir="/")
+DomainName = get_docker_secret("route53_ddns_domain_name", safe=False, secrets_dir="/")
+RecordType = get_docker_secret("route53_ddns_record_type", safe=False, secrets_dir="/")
+Ttl = get_docker_secret("route53_ddns_ttl", safe=False, secrets_dir="/", cast_to=int)
+Interval = get_docker_secret("route53_ddns_interval", safe=False, secrets_dir="/", cast_to=int)
 
 def get_current_local_ip():
     return get('https://api.ipify.org').text
@@ -31,7 +27,7 @@ def get_current_route53_ip():
 
     response = client.list_resource_record_sets(
         HostedZoneId=HostedZoneId,
-        StartRecordName=DnsRecordName,
+        StartRecordName=DomainName,
         StartRecordType=RecordType,
         MaxItems='1'
     )
@@ -51,7 +47,7 @@ def update_route53_ip(ipv4):
                 {
                     'Action': 'UPSERT',
                     'ResourceRecordSet': {
-                        'Name': DnsRecordName,
+                        'Name': DomainName,
                         'Type': RecordType,
                         'TTL': Ttl,
                         'ResourceRecords': [
@@ -83,9 +79,10 @@ if __name__ == "__main__":
                 print("Route53 record updated: {} => {}".format("home.body-cakes.net", local_ip))
             else:
                 print("Local IP unchanged.")
-                
+
         except Exception as e:
             print("Failed to update DNS record")
             print(str(e))
 
+        print("Sleeping for {} seconds...".format(Interval))
         time.sleep(Interval)

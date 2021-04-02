@@ -1,0 +1,22 @@
+#!/bin/bash
+
+echo "Initializing Docker secrets and config for route53-ddns service..."
+
+read -s -p "AWS Access Key ID     : " aws_access_key_id
+echo ""
+read -s -p "AWS Secret Access key : " aws_secret_access_key
+echo ""
+read -p "Hosted Zone ID        : " host_zone_id
+read -p "Domain Name           : " domain_name
+read -p "Record type           : " record_type
+read -p "TTL                   : " ttl
+read -p "Interval              : " interval
+
+printf $aws_access_key_id     | docker secret create route53_ddns_aws_access_key_id -
+printf $aws_secret_access_key | docker secret create route53_ddns_aws_secret_access_key -
+
+printf $host_zone_id | docker config create route53_ddns_hosted_zone_id -
+printf $domain_name  | docker config create route53_ddns_domain_name -
+printf $record_type  | docker config create route53_ddns_record_type -
+printf $ttl          | docker config create route53_ddns_ttl -
+printf $interval     | docker config create route53_ddns_interval -
