@@ -45,12 +45,12 @@ Generate the user's access keys and store them somewhere safe.
 
 ## Deployment
 
-1. Clone the repository `ellis-vester/route53-ddns` the machine you'll be deploying the container.
+1. Clone the repository `ellis-vester/route53-ddns` to the machine you'll be deploying the container.
 2. Execute `docker build -t route53-ddns .` to build the docker container.
 3. To start the container as a service, execute `docker stack deploy --compose-file docker-compose.yml service`
-4. Inspect the logs by running `docker service logs route53-ddns_route53-ddns`
+4. Inspect the logs by running `docker service logs service_route53-ddns`
 
 ## Teardown
 
-1. Stop the service by running `docker service rm route53-ddns_service`
+1. Stop the service by running `docker service rm service_route53-ddns`
 2. Optionally remove the secrets and configs by executing `bash config-down`
