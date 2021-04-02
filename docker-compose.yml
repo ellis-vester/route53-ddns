@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  route53-ddns:
+    image: 
+      build: .
+    container_name: route53-ddns
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - HOSTED_ZONE_ID=Z104486921289MKRWZNSP
+      - DNS_RECORD_NAME=home.body-cakes.net
+      - RECORD_TYPE=A
+      - TTL=60
+      - INTERVAL=60
+    restart: unless-stopped
+    secrets:
+      - aws_access_key_id
+      - aws_secret_access_key
+
+secrets:
+  aws_access_key_id: 
+    external: true
+  aws_secret_access_key: 
+    external: true
