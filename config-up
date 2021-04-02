@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Initializing Docker secrets and config for route53-ddns service..."
+echo "Initializing Docker secrets and configs for route53-ddns service..."
 
 read -s -p "AWS Access Key ID     : " aws_access_key_id
 echo ""

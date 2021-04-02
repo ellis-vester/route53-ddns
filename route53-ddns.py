@@ -9,7 +9,7 @@ import boto3
 AwsAccessKeyId = get_docker_secret("route53_ddns_aws_access_key_id", safe=False)
 AwsSecretAccessKey = get_docker_secret("route53_ddns_aws_secret_access_key", safe=False)
 
-# docker config
+# docker configs
 HostedZoneId = get_docker_secret("route53_ddns_hosted_zone_id", safe=False, secrets_dir="/")
 DomainName = get_docker_secret("route53_ddns_domain_name", safe=False, secrets_dir="/")
 RecordType = get_docker_secret("route53_ddns_record_type", safe=False, secrets_dir="/")
