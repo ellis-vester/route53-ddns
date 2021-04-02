@@ -2,15 +2,15 @@
 
 Docker container that performs DDNS synchronization against a DNS record registered with Amazon Route53.
 
-## Pre-requirements
+## Prerequisites
 
 1. Docker environment with swarm enabled so we can make use of Docker secrets and Docker configs. Only one node is required in the cluster.
-2. A DNS record in Amazon Route53 already created.
-3. A set of access keys that grant access to Route53 (see required IAM Permissions below).
+2. A DNS record in an Amazon Route53 public hosted zone.
 
 ## IAM Authorization
 
-Use this template to assign the required IAM permissions. Fill in the `hosted-zone-id` then create the IAM policy and attach to the IAM user you'll be running the application as:
+1. Create a new IAM user and generate a set of access keys.
+2. Use this template to assign the required IAM permissions. Fill in the `hosted-zone-id` attach the IAM policy to your IAM user:
 
 ```json
 {
@@ -29,26 +29,23 @@ Use this template to assign the required IAM permissions. Fill in the `hosted-zo
 }
 ```
 
-Generate the user's access keys and store them somewhere safe.
-
 ## Configuration
 
 1. Ensure you have the following configuration values on hand:
-- AWS Access Key ID
-- AWS Secret Access Key
-- Hosted Zone ID associated with your domain
-- Domain name you want to use
-- TTL in seconds value for the DNS record
-- Interval in seconds for performing the DNS record update
+    - AWS Access Key ID
+    - AWS Secret Access Key
+    - Hosted Zone ID associated with your domain
+    - Domain name you want to use
+    - TTL in seconds for the DNS record
+    - Interval in seconds to control update frequency
 
-2. Execute `bash config-up`. You'll be prompted to enter the above values and the script will create docker secrets and docker configs.
+2. Execute `bash config-up`. The script will prompt you to enter the above items and generate docker secrets and docker configs.
 
 ## Deployment
 
-1. Clone the repository `ellis-vester/route53-ddns` to the machine you'll be deploying the container.
-2. Execute `docker build -t route53-ddns .` to build the docker container.
-3. To start the container as a service, execute `docker stack deploy --compose-file docker-compose.yml service`
-4. Inspect the logs by running `docker service logs service_route53-ddns`
+1. Execute `docker build -t route53-ddns .` to build the docker container.
+2. To start the container as a service, execute `docker stack deploy --compose-file docker-compose.yml service`.
+3. Inspect the logs by running `docker service logs service_route53-ddns`.
 
 ## Teardown
 
