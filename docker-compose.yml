@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.7"
 secrets:
   route53_ddns_aws_access_key_id: 
     external: true
